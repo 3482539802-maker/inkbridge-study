@@ -160,7 +160,7 @@ struct Index {
                   else notificationCapture.enable(this.getUIContext().getHostContext() as common.UIAbilityContext);
                 })
               Text(this.notificationMessage).fontSize(14).fontColor('#63756D')
-              Text('系统屏幕授权由你确认，麦克风关闭。定位需要的画面仅临时处理，不保存、不上传；原始笔迹单独保存。')
+              Text('系统授权由你确认，麦克风关闭。定位画面仅在平板与本机电脑临时处理，随后删除；原始笔迹单独保存并同步电脑。')
                 .fontSize(14).lineHeight(23).fontColor('#63756D')
               Text('诊断信息').fontSize(14).fontWeight(FontWeight.Medium).fontColor('#63756D')
               Text(this.message).fontSize(13).fontColor('#63756D').copyOption(CopyOptions.LocalDevice)
