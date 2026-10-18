@@ -18,6 +18,9 @@ python -m pip install -r requirements.txt -r requirements-visual.txt -r requirem
 安装器将 skill 复制到用户级 `$CODEX_HOME/skills`（默认 `~/.codex/skills`），
 仅将工具箱位置保存在本机 `~/.codex/inkbridge/config.json`。安装后在新聊天中使用：
 
+更新安装默认保留已经配置的工具箱位置；需要主动切换时使用 `./scripts/install_skill.ps1 -SetDefault`。
+状态检查有超时与新鲜度门槛，失败表示健康未知，须检查已有服务，不能据此重复启动。
+
 > 使用 $inkbridge-study，检查已有学习系统，并帮我把这份试卷做成留白作答本。
 
 也可以自然提到“用 InkBridge 核对我的笔迹并给渐进提示”。

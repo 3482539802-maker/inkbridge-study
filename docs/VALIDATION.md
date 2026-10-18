@@ -2,6 +2,14 @@
 
 The initial source distribution was tested on Windows with Python 3.13:
 
+Follow-up entrypoint audit: 8 routing/freshness checks passed, including refusal
+to redirect an existing toolbox, explicit replacement, stale/missing health,
+clock anomalies, finite socket timeout and HTTP redirects. An isolated installer
+exercise verified repeated updates preserve config, keep a skill backup, and
+switch defaults only when explicitly requested. Cross-workspace live status was
+read without restarting services or accessing tablet UI. These are targeted
+follow-up checks, not a new end-to-end device trial.
+
 - Core offline suite: 508 tests, 504 passed and 4 explicit private-fixture skips.
 - Optional isolated recognition adapter suite: 7 tests passed.
 - Standalone raw TCP/HTTP pipeline and durable session restart/replay passed.

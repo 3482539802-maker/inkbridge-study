@@ -11,14 +11,14 @@ description: 使用 InkBridge 配合华为笔记准备留白作答本、同步�
 
 以本 skill 所在目录为基准执行 `python -X utf8 scripts/bridge.py locate`，不要在当前工作空间猜测相对路径。解析返回的 `root` 后，所有项目脚本均使用该根目录的绝对路径，并将命令工作目录设为该根目录。
 
-定位顺序：`INKBRIDGE_HOME` → `~/.codex/inkbridge/config.json` → skill 位于源码仓库时自动发现。缺失时仅要求用户提供已有克隆路径；也可按用户请求克隆公开仓库并运行 `scripts/install_skill.ps1`。用 `bridge.py configure --root <克隆目录>` 保存本机位置；配置不放进 skill 或 Git。
+定位顺序：`INKBRIDGE_HOME` → `~/.codex/inkbridge/config.json` → skill 位于源码仓库时自动发现。缺失时仅要求用户提供已有克隆路径；也可按用户请求克隆公开仓库并运行 `scripts/install_skill.ps1`。安装默认保留已有工具箱位置。用 `bridge.py configure --root <克隆目录>` 保存首次位置；用户明确要求切换时才加 `--replace`（或安装器 `-SetDefault`），配置不放进 skill 或 Git。
 
 先读根目录 `AGENTS.md`、`docs/HANDOFF.md`、`docs/WORKFLOW.md`。深入实现时按 `docs/WORKSTREAMS.md` 选择对应模块。路径不存在表示该安装缺少对应组件，不要编造运行状态。
 
 ## 按请求推进
 
 - **准备课程或题册**：读取 [references/workflows.md](references/workflows.md) 的材料流程，检查现有 CLI 的 `--help`，核对源页和切分，保留 hash/出处，作答本与电脑答案分离。不要将题目答案放入平板作答本。
-- **继续学习或检查系统**：执行本 skill 的 `scripts/bridge.py status`，它只调用已有状态检查。结合新鲜 receiver/session 状态和实际进程判断是否在采集。需要设备检查时使用工具箱 `connect-tablet.ps1 -CheckOnly`；恢复连接使用 `-NoLaunch`。
+- **继续学习或检查系统**：执行本 skill 的 `scripts/bridge.py status`，它只读本机HTTP状态，限制等待并拒绝陈旧状态。报错表示健康未知，不表示没有服务或可以重启。结合新鲜 receiver/session 状态和实际进程判断是否在采集。需要设备检查时使用工具箱 `connect-tablet.ps1 -CheckOnly`；恢复连接使用 `-NoLaunch`。
 - **核图、提示或批阅**：读取 [references/workflows.md](references/workflows.md) 的证据流程及工具箱 `docs/CHAT_RECOGNITION.md`（如有）。逐图核对文字、公式、图形和标注，保留不确定；通过已有队列/校验接口写入新版本，勿直接修改数据库或复活 superseded 任务。
 - **开发或离线分析**：按工具箱模块交接执行。使用独立测试目录/端口，不启动第二套生产服务；源码更新不等于运行中代码已经加载。
 

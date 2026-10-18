@@ -1,4 +1,4 @@
-param([string]$SkillHome)
+param([string]$SkillHome, [switch]$SetDefault)
 $ErrorActionPreference = 'Stop'
 $taskRoot = Split-Path $PSScriptRoot -Parent
 if (-not $SkillHome) {
@@ -15,6 +15,7 @@ if (Test-Path -LiteralPath $taskDestination) {
 }
 New-Item -ItemType Directory -Path $taskDestination -Force | Out-Null
 Copy-Item -Path (Join-Path $taskSource '*') -Destination $taskDestination -Recurse -Force
-& python -X utf8 (Join-Path $taskDestination 'scripts/bridge.py') configure --root $taskRoot
+$taskPolicy = if ($SetDefault) { '--replace' } else { '--keep-existing' }
+& python -X utf8 (Join-Path $taskDestination 'scripts/bridge.py') configure --root $taskRoot $taskPolicy
 if ($LASTEXITCODE -ne 0) { throw 'Skill installed but local root configuration failed.' }
 Write-Output ('Installed skill: ' + $taskDestination)

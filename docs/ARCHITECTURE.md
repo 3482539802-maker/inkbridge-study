@@ -22,7 +22,9 @@ through validated inboxes/new revisions, not ad-hoc SQL edits.
 
 `skills/inkbridge-study/scripts/bridge.py` resolves a checkout through
 `INKBRIDGE_HOME`, user-local config or package location, and only delegates a
-read-only status check. The skill does not bundle a second production server.
+read-only, bounded loopback status check with freshness barriers. Updating the
+skill preserves an existing toolbox default unless deliberately switched.
+The skill does not bundle a second production server.
 
 Default local ports: raw TCP 18765, raw HTTP 18766, learning view 18767,
 geometry transport 18769, legacy review 18770, course dashboard 18771.
