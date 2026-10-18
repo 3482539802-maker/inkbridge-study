@@ -1,0 +1,11 @@
+{
+  "root": "C:/InkBridge/output/learning",
+  "port": 18772,
+  "courses": [
+    {
+      "id": "example-course",
+      "manifest": "C:/InkBridge/output/workbook/manifest.json",
+      "curriculum": "C:/InkBridge/config/curriculum.example.json"
+    }
+  ]
+}

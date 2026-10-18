@@ -1,0 +1,16 @@
+{
+  "root": "C:/InkBridge/output/learning",
+  "port": 18771,
+  "python": "python",
+  "supervise_capture": false,
+  "allow_idle_pipeline_reconfigure": false,
+  "courses": [],
+  "recognition": {
+    "enabled": false,
+    "backend": "current_chat"
+  },
+  "tutor": {
+    "mode": "review",
+    "external_content_authorized": false
+  }
+}

@@ -1,0 +1,3 @@
+# Receiver/viewer/test suite use only the Python standard library.
+# Pillow is used solely to export a coordinate reconstruction as PNG.
+Pillow>=10,<13

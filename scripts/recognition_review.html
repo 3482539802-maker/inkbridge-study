@@ -1,0 +1,51 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'none'; base-uri 'none'; form-action 'none'">
+<title>笔迹分组核对</title>
+<style>
+:root{font:16px/1.6 system-ui,'Microsoft YaHei',sans-serif;color:#192d39;background:#f3f5f4;--accent:#176852}
+*{box-sizing:border-box}body{margin:0}main{max-width:1080px;margin:auto;padding:42px 24px 100px}
+.eyebrow{color:var(--accent);font-size:13px;letter-spacing:2px}h1{font-size:36px;line-height:1.3;margin:12px 0}h2{font-size:20px;margin:0}
+.intro{max-width:760px;color:#50626a;margin:16px 0 26px}.toolbar{position:sticky;top:0;z-index:1;background:#f3f5f4f5;padding:14px 0;display:flex;align-items:center;justify-content:space-between;gap:18px;border-bottom:1px solid #dce3df;backdrop-filter:blur(8px)}
+button{background:var(--accent);color:white;border:0;border-radius:9px;padding:12px 20px;font:inherit;cursor:pointer}button:hover{background:#12523f}button:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid #5bb5c2;outline-offset:3px}
+.sample{background:white;border:1px solid #dce3df;border-radius:14px;margin-top:24px;overflow:hidden}.sample header{display:flex;justify-content:space-between;gap:16px;padding:19px 24px;border-bottom:1px solid #edf0ee}.meta{font-size:13px;color:#6a797b}
+.body{display:grid;grid-template-columns:minmax(0,1fr) 350px;gap:26px;padding:24px}.ink{min-height:180px;display:flex;align-items:center;justify-content:center;border:1px solid #e8ece9;border-radius:9px;padding:16px;background:#fdfefd}.ink img{display:block;width:auto;max-width:100%;max-height:260px;object-fit:contain;image-rendering:auto}
+label{display:block;font-size:14px;font-weight:600;margin-bottom:7px}select,textarea{font:inherit;color:#192d39;background:#fff;border:1px solid #b7c8c0;border-radius:7px;padding:9px 11px;width:100%}textarea{min-height:65px;resize:vertical;font-size:14px}select{margin-bottom:15px}.hint{font-size:12px;color:#6a797b;margin:7px 0 14px}
+details{margin:0 24px 22px;padding-top:12px;border-top:1px solid #edf0ee}summary{cursor:pointer;color:var(--accent);font-size:14px}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f4f7f5;border-radius:7px;padding:12px;font:13px/1.7 ui-monospace,Consolas,monospace}footer{font-size:13px;color:#6a797b;margin:30px 0}.labeled header{border-left:4px solid var(--accent);padding-left:20px}
+@media(max-width:760px){main{padding:25px 15px 70px}h1{font-size:29px}.body{grid-template-columns:1fr;padding:18px;gap:20px}.sample header{padding:16px 18px}.toolbar{font-size:14px}.ink{min-height:130px}.meta{max-width:115px;text-align:right}button{padding:10px 13px}}
+</style>
+<main><div class="eyebrow">历史笔迹 · 分组核对</div><h1>先看清写了什么，再判断识别结果</h1>
+<p class="intro">只选类型即可，所有公式框都可以留空，不需要会打 LaTeX。划掉字母、圈画或框选原题条件，请选“题目标注”；混在公式里可选“多类内容”。备注可以用普通中文。看不清就选“不确定”，不用重新书写，也不必一次核对完。<a href="locations/index.html" target="_blank" rel="noopener">查看原题与笔迹位置 ↗</a></p>
+<div class="toolbar"><span id="progress" role="status" aria-live="polite"></span><button id="export" type="button">导出核对结果</button></div>
+<p id="save-state" class="hint">草稿只保存在当前浏览器；完成后请导出结果文件。</p><div id="samples"></div>
+<footer>这里只显示历史轨迹，不能代表撤回、擦除或移动后的最终笔记。模型候选默认折叠，核对时可先独立判断。</footer></main>
+<script id="packet" type="application/json">__REVIEW_PACKET__</script>
+<script>
+'use strict';
+const packet=JSON.parse(document.getElementById('packet').textContent),storageKey='inkbridge-review:'+packet.dataset_id;
+const kinds=[['','未标记'],['complete_formula','完整公式'],['partial_formula','公式片段 / 未写完'],['diagram','图形 / 图示'],['annotation','题目标注 / 圈画、划掉、框条件'],['text','文字'],['mixed','多类内容 / 叠写'],['uncertain','不确定 / 缺上下文']];
+let labels={};try{labels=JSON.parse(localStorage.getItem(storageKey)||'{}')}catch(e){document.getElementById('save-state').textContent='浏览器无法保存草稿，请及时导出结果文件。'}
+function node(tag,text){const e=document.createElement(tag);if(text!==undefined)e.textContent=text;return e}
+function updateProgress(){document.getElementById('progress').textContent=`已核对 ${Object.values(labels).filter(x=>x.kind).length} / ${packet.samples.length} 组`}
+function save(sample,section,kind,latex,notes){labels[sample.id]={sample_id:sample.id,kind:kind.value,latex:latex.value,notes:notes.value};section.classList.toggle('labeled',!!kind.value);try{localStorage.setItem(storageKey,JSON.stringify(labels))}catch(e){document.getElementById('save-state').textContent='草稿保存失败，请导出结果文件。'}updateProgress()}
+for(const sample of packet.samples){
+ const section=node('section');section.className='sample';const header=node('header');header.append(node('h2',`第 ${sample.number} 组`));const meta=node('span',`${sample.contacts} 笔 · ${sample.duration_seconds.toFixed(1)} 秒`);meta.className='meta';header.append(meta);section.append(header);
+ const body=node('div');body.className='body';const ink=node('div');ink.className='ink';const image=node('img');image.src=sample.image_data;image.alt=`第 ${sample.number} 组历史笔迹`;ink.append(image);body.append(ink);
+ const form=node('div'),kind=node('select'),latex=node('textarea'),notes=node('textarea');
+ const previous=labels[sample.id]||{};kind.id='kind-'+sample.number;latex.id='latex-'+sample.number;notes.id='notes-'+sample.number;
+ for(const [value,text] of kinds){const option=node('option',text);option.value=value;kind.append(option)}kind.value=previous.kind||'';latex.value=previous.latex||'';notes.value=previous.notes||'';latex.maxLength=8192;notes.maxLength=4096;
+ const label=node('label','这组笔迹属于');label.htmlFor=kind.id;form.append(label,kind);
+ const context=node('a','在原题上查看这一组 ↗');context.href='locations/index.html?session='+encodeURIComponent(packet.manifest.session_id)+'&group='+sample.number;context.target='_blank';context.rel='noopener';form.append(context);
+ const transcription=node('label','正确 LaTeX（完全可选）');transcription.htmlFor=latex.id;latex.placeholder='不会输入公式就留空，只选类型即可';form.append(transcription,latex);
+ const hint=node('p','无需照抄模型结果。暂时只选类型，也能帮助改进分组。');hint.className='hint';form.append(hint);
+ const noteLabel=node('label','中文说明（可留空）');noteLabel.htmlFor=notes.id;notes.placeholder='例如：划掉题目中的字母 / 框选条件 / 缺了左边一项';form.append(noteLabel,notes);body.append(form);section.append(body);
+ const details=node('details');details.append(node('summary','展开两种模型的候选'));
+ sample.predictions.forEach((prediction,i)=>{details.append(node('p',`模型 ${i+1}`),node('pre',prediction.latex_candidate||'没有完整候选'))});section.append(details);
+ for(const input of [kind,latex,notes])input.addEventListener('input',()=>save(sample,section,kind,latex,notes));
+ section.classList.toggle('labeled',!!kind.value);document.getElementById('samples').append(section);
+}
+document.getElementById('export').addEventListener('click',()=>{
+ const result={schema:1,dataset_id:packet.dataset_id,session_id:packet.manifest.session_id,annotations:packet.samples.map(s=>labels[s.id]).filter(x=>x&&x.kind)};
+ const url=URL.createObjectURL(new Blob([JSON.stringify(result,null,2)],{type:'application/json'})),link=node('a');link.href=url;link.download='inkbridge-labels-'+packet.dataset_id.slice(0,12)+'.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+});updateProgress();
+</script></html>

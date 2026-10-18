@@ -1,0 +1,72 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'none'; base-uri 'none'; form-action 'none'">
+<title>原题上的历史笔迹</title>
+<style>
+:root{font:15px/1.65 system-ui,'Microsoft YaHei',sans-serif;color:#20373c;background:#f2f5f3;--green:#176852}*{box-sizing:border-box}body{margin:0}main{max-width:1440px;margin:auto;padding:28px 24px 70px}a{color:var(--green)}h1{font-size:32px;margin:8px 0}h2{font-size:18px;margin:0 0 12px}p{margin:10px 0}.intro{max-width:920px;color:#576a6e}.eyebrow{color:var(--green);font-size:12px;letter-spacing:2px}.controls{display:grid;grid-template-columns:1fr 1.7fr 1fr;gap:16px;background:white;padding:18px;border:1px solid #dce4de;border-radius:12px;margin:24px 0 18px}label{display:block;font-size:13px;font-weight:600}select,button{font:inherit;padding:9px 12px;border:1px solid #b3c6bc;border-radius:7px;background:white;color:#20373c;max-width:100%}select{width:100%;margin-top:5px}button{cursor:pointer}button:hover{background:#e9f1eb}button:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid #57adb9;outline-offset:3px}.layout{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:22px;align-items:start}.paper,.card{background:white;border:1px solid #dce4de;border-radius:12px;overflow:hidden}.paper-head{padding:14px 18px;border-bottom:1px solid #e4ebe5;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}.paper-head p{font-size:13px;margin:0}.tools{display:flex;gap:7px}.tools button{font-size:13px;padding:6px 10px}#stage{display:block;width:100%;height:auto;max-height:1050px;background:#fff}#empty{padding:55px 22px;color:#647377}.card{padding:20px;margin-bottom:16px}.stats{font-size:14px;color:#425b60}.blue{color:#125dbe}.orange{color:#a25c00}.pink{color:#b12171}.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;margin:14px 0}#screen{width:100%;height:190px;border:1px solid #dfe7e0;border-radius:7px;background:#fafcfb}.small{font-size:12px;color:#627579}.hint{font-size:13px;background:#edf5ef;padding:12px;border-radius:7px}#where{font-size:14px}ul{padding-left:20px;margin:10px 0}li{margin:6px 0}details{margin-top:16px}summary{cursor:pointer;color:var(--green)}pre{font:13px/1.6 Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere;background:#f5f7f5;padding:10px}footer{margin-top:24px;color:#63777a;font-size:12px;overflow-wrap:anywhere}#page-select:disabled{opacity:.5}
+@media(max-width:850px){main{padding:20px 14px 55px}.controls{grid-template-columns:1fr;gap:10px}.layout{grid-template-columns:1fr}h1{font-size:27px}.card{padding:17px}.paper-head{padding:12px}.layout aside{display:grid;grid-template-columns:1fr;gap:0}#stage{max-height:none}}
+</style>
+<main><div class="eyebrow">原件背景 × 实际笔迹</div><h1>看看笔迹落在原题哪里</h1>
+<p class="intro">背景来自本机原始 PDF，彩色轨迹来自历史笔事件。可以按核对组或单笔查看，并切换整页／局部。这里没有经过你确认的文字转写；模型输出仅作为折叠候选展示。<a href="../review.html" target="_blank" rel="noopener">返回分类核对 ↗</a></p>
+<div class="controls"><label>哪次记录<select id="session-select"></select></label><label>查看范围<select id="selection"></select></label><label>已定位到的原件页<select id="page-select"></select></label></div>
+<p class="small"><label><input type="checkbox" id="operations"> 显示套索及工具未知轨迹（紫色虚线，不作为书写）</label></p>
+<div class="layout"><section class="paper"><div class="paper-head"><p id="page-title"></p><div class="tools"><button id="focus" type="button">放大所选笔迹</button><button id="whole" type="button">看整页</button><button id="toggle" type="button" aria-pressed="false">只看原题</button></div></div>
+<svg id="stage" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="原始页面与历史笔迹位置候选"></svg><div id="empty" hidden>所选笔迹没有可靠页面位置，暂不显示原题背景。右侧保留屏幕轨迹。</div></section>
+<aside><section class="card"><h2 id="selection-title">记录概况</h2><div id="stats" class="stats"></div><p id="tool-state" class="small"></p><div class="legend"><span class="blue">● 域内候选</span><span class="orange">● 外推候选</span></div><p id="where"></p><div id="reasons" class="small"></div><p class="hint">均为位置候选，尚未证明毫米级精度。未定位的点不会补线到原题上。</p><details id="model"><summary>模型文字候选（可能读错）</summary><div id="predictions"></div></details></section>
+<section class="card"><h2>屏幕上的原始轨迹</h2><svg id="screen" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="原始屏幕轨迹，粉色点没有页面坐标"></svg><p id="screen-hint" class="small"></p></section>
+<section class="card"><h2>怎么理解这些标记</h2><p class="small">划掉字母、圈画或框条件属于“题目标注”，需要结合原题理解。手写划线本身不会被当成系统删除命令。</p><p class="small">这是历史输入的叠加：撤回前、擦除前和套索移动前的轨迹也可能出现，不代表笔记最终保存的样子。页码是 PDF 文件页序，可能与书上印刷页码不同。</p></section></aside></div>
+<footer id="provenance"></footer></main>
+<script id="context-packet" type="application/json">__CONTEXT_PACKET__</script>
+<script>
+'use strict';
+const contextPacket=JSON.parse(document.getElementById('context-packet').textContent);
+const $=id=>document.getElementById(id),ns='http://www.w3.org/2000/svg';
+const reasonNames={input_motion_or_context_barrier:'输入／上下文保护：出现手指等接触、取消或窗口变化，旧位置作废',ambiguous_bracketing_context:'页面判断不唯一：前后页身份、支持范围或运动证据不能唯一对应',outside_bound_page:'已绑定页面之外：有效前后画面都把该点排除在页面外',no_bracketing_geometry:'缺少有效前后画面：附近页面或窗口几何发生变化'};
+let currentSession,selected=[],currentPage,hidden=false;
+const toolNames={lasso_path_candidate:'套索操作候选',pen_contact_tool_unknown:'工具未知',ui_or_outside_page_contact:'界面／页外接触',erase_candidate_mode_unknown:'擦除工具候选',pen_contact_pen:'书写工具候选'};
+function el(tag,text){const e=document.createElement(tag);if(text!==undefined)e.textContent=text;return e}
+function svgEl(tag,attrs){const e=document.createElementNS(ns,tag);for(const [k,v]of Object.entries(attrs))e.setAttribute(k,v);return e}
+function option(value,text){const e=el('option',text);e.value=value;return e}
+function shape(svg,xy,color,width){if(!xy.length)return;if(xy.length===1)svg.append(svgEl('circle',{cx:xy[0][0],cy:xy[0][1],r:width,fill:color}));else svg.append(svgEl('polyline',{points:xy.map(p=>p.join(',')).join(' '),fill:'none',stroke:color,'stroke-width':width,'stroke-linecap':'round','stroke-linejoin':'round'}))}
+function bounds(xy){return [Math.min(...xy.map(p=>p[0])),Math.min(...xy.map(p=>p[1])),Math.max(...xy.map(p=>p[0])),Math.max(...xy.map(p=>p[1]))]}
+function chosenRuns(){return selected.filter(c=>c.writing_tool_candidate||$('operations').checked).flatMap(c=>c.runs.map(r=>({...r,operation:!c.writing_tool_candidate}))).filter(r=>currentPage&&r.page_key===currentPage.key)}
+function setSession(){currentSession=contextPacket.sessions.find(s=>s.id===$('session-select').value);const selector=$('selection');selector.replaceChildren(option('all','全部历史接触'),option('unknown','仅看页面位置不完整的笔'),option('operations','套索及工具未知接触'));
+ for(const g of currentSession.groups)selector.append(option('group:'+g.number,`核对第 ${g.number} 组 · ${g.starts.length} 笔`));
+ for(const c of currentSession.contacts)selector.append(option('contact:'+c.start_seq,`单笔 ${c.number} · ${c.located}/${c.points} 点有位置${c.writing_tool_candidate?'':' · '+(toolNames[c.tool_kind]||c.tool_kind)}`));
+ updateSelection();}
+function updateSelection(){const value=$('selection').value;let group;
+ if(value==='all')selected=currentSession.contacts;else if(value==='unknown')selected=currentSession.contacts.filter(c=>c.located<c.points);else if(value==='operations')selected=currentSession.contacts.filter(c=>!c.writing_tool_candidate);else if(value.startsWith('group:')){group=currentSession.groups.find(g=>g.number===+value.split(':')[1]);selected=currentSession.contacts.filter(c=>group.starts.includes(c.start_seq))}else selected=currentSession.contacts.filter(c=>c.start_seq===+value.split(':')[1]);
+ if(value==='operations'||(value.startsWith('contact:')&&selected.some(c=>!c.writing_tool_candidate)))$('operations').checked=true;
+ const operationCount=selected.filter(c=>!c.writing_tool_candidate).length;
+ $('tool-state').textContent=selected.length===1?(toolNames[selected[0].tool_kind]||selected[0].tool_kind)+(selected[0].tool_evidence==='nonwriting_tool_observed_during_and_after_contact_transition'?'：接触中途及结束后观察到工具，开始时状态未完全确认。':''):`包含 ${operationCount} 段工具操作或工具未知接触；默认隐藏其页面轨迹。`;
+ const keys=new Set(selected.flatMap(c=>c.runs.map(r=>r.page_key))),previous=$('page-select').value;
+ const selector=$('page-select');selector.replaceChildren();for(const page of contextPacket.pages.filter(p=>keys.has(p.key)).sort((a,b)=>a.pdf_page-b.pdf_page))selector.append(option(page.key,`PDF 第 ${page.pdf_page} 页`));
+ if(keys.has(previous))selector.value=previous;selector.disabled=!keys.size;
+ $('selection-title').textContent=group?`核对第 ${group.number} 组`:(value==='all'?'整次记录':value==='unknown'?'位置不完整的笔':value==='operations'?'工具操作及未知接触':`单笔 ${selected[0]?.number||''}`);
+ const total=selected.reduce((n,c)=>n+c.points,0),located=selected.reduce((n,c)=>n+c.located,0),extra=selected.flatMap(c=>c.runs).filter(r=>r.status==='extrapolated_candidate').reduce((n,r)=>n+r.xy.length,0);
+ const motion=selected.flatMap(c=>c.runs).filter(r=>r.status==='motion_candidate').reduce((n,r)=>n+r.xy.length,0);
+ $('stats').textContent=`${selected.length} 段原始笔接触，${total} 个点；${located} 点有页面位置（其中 ${extra} 点为外推、${motion} 点为运动估计），${total-located} 点未知。`;
+ const counts={};for(const c of selected)for(const [r,n]of Object.entries(c.reasons))counts[r]=(counts[r]||0)+n;
+ $('reasons').replaceChildren();if(Object.keys(counts).length){$('reasons').append(el('p','未知点的原因：'));const list=el('ul');for(const [r,n]of Object.entries(counts))list.append(el('li',`${n} 点 · ${reasonNames[r]||r}`));$('reasons').append(list)}
+ $('model').hidden=!group;$('model').open=false;$('predictions').replaceChildren();if(group)for(const [i,p]of group.predictions.entries())$('predictions').append(el('p',`模型 ${i+1} · 未经人工确认`),el('pre',p.latex_candidate||'没有完整文字候选'));
+ $('provenance').textContent=`会话 ${currentSession.id} · raw SHA256 ${currentSession.raw_sha256} · 原件哈希已核对。运动估计以紫色标示，原始记录未改动。`;
+ drawPage();drawScreen();if(group||value.startsWith('contact:'))focusSelection();}
+function drawPage(){currentPage=contextPacket.pages.find(p=>p.key===$('page-select').value);const stage=$('stage');stage.replaceChildren();stage.style.display=currentPage?'block':'none';$('empty').hidden=!!currentPage;$('focus').disabled=!currentPage;$('whole').disabled=!currentPage;$('toggle').disabled=!currentPage;
+ if(!currentPage){$('page-title').textContent='页面位置未知';$('where').textContent='没有足够证据判断这一笔属于哪页、位于何处。';return}
+ const [w,h]=currentPage.size;stage.setAttribute('viewBox',`0 0 ${w} ${h}`);stage.append(svgEl('image',{href:currentPage.image,x:0,y:0,width:w,height:h}));const ink=svgEl('g',{id:'ink-layer',opacity:hidden?0:1});
+ for(const r of chosenRuns()){const layer=svgEl('g',r.operation?{'stroke-dasharray':'3 2'}:{});shape(layer,r.xy,r.operation?'#973ca2':r.status==='motion_candidate'?'#783bc2':r.status==='candidate'?'#125dbe':'#bb6a00',.95);ink.append(layer)}stage.append(ink);
+ $('page-title').textContent=`${currentPage.document} · PDF 第 ${currentPage.pdf_page} 页`;
+ $('where').textContent='所选工具轨迹当前已隐藏，可勾选上方选项查看。';const xy=chosenRuns().flatMap(r=>r.xy);if(xy.length){const b=bounds(xy),x=(b[0]+b[2])/2/w,y=(b[1]+b[3])/2/h;const pos=(y<.34?'上部':y>.66?'下部':'中部')+' · '+(x<.34?'偏左':x>.66?'偏右':'居中');$('where').textContent=`本页所选笔迹：${pos}。范围（PDF pt）：左 ${b[0].toFixed(1)}、上 ${b[1].toFixed(1)}、右 ${b[2].toFixed(1)}、下 ${b[3].toFixed(1)}。`}}
+function focusSelection(){if(!currentPage)return;const xy=chosenRuns().flatMap(r=>r.xy);if(!xy.length)return;const b=bounds(xy),[w,h]=currentPage.size;let x=Math.max(0,b[0]-45),y=Math.max(0,b[1]-50),right=Math.min(w,b[2]+45),bottom=Math.min(h,b[3]+50);$('stage').setAttribute('viewBox',`${x} ${y} ${Math.max(1,right-x)} ${Math.max(1,bottom-y)}`)}
+function drawScreen(){const svg=$('screen');svg.replaceChildren();if(['all','unknown','operations'].includes($('selection').value)){$('screen-hint').textContent='请选择某一核对组或单笔，查看屏幕轨迹。不同翻页时刻的屏幕轨迹不能拼成一页。';return}
+ const flat=selected.flatMap(c=>c.screen_xy);if(!flat.length)return;const b=bounds(flat),span=Math.max(b[2]-b[0],b[3]-b[1],20),pad=span*.09;svg.setAttribute('viewBox',`${b[0]-pad} ${b[1]-pad} ${b[2]-b[0]+pad*2} ${b[3]-b[1]+pad*2}`);
+ for(const c of selected){shape(svg,c.screen_xy,'#708486',Math.max(.7,span/260));for(const p of c.unknown_screen_xy)shape(svg,[p],'#b12171',Math.max(1,span/170))}
+ $('screen-hint').textContent='灰色：历史屏幕轨迹；粉色点：没有页面坐标的部分。此图仅保留屏幕位置，不能据此推断原件页码。';}
+for(const session of contextPacket.sessions)$('session-select').append(option(session.id,session.label));
+$('session-select').addEventListener('change',setSession);$('selection').addEventListener('change',updateSelection);$('page-select').addEventListener('change',()=>{drawPage();if(!['all','unknown'].includes($('selection').value))focusSelection()});
+$('focus').addEventListener('click',focusSelection);$('whole').addEventListener('click',drawPage);$('toggle').addEventListener('click',()=>{hidden=!hidden;$('toggle').textContent=hidden?'显示笔迹':'只看原题';$('toggle').setAttribute('aria-pressed',String(hidden));const ink=$('ink-layer');if(ink)ink.setAttribute('opacity',hidden?0:1)});
+$('operations').addEventListener('change',drawPage);
+const query=new URLSearchParams(location.search);if(contextPacket.sessions.some(s=>s.id===query.get('session')))$('session-select').value=query.get('session');setSession();
+if(query.has('group')&&currentSession.groups.some(g=>String(g.number)===query.get('group'))){$('selection').value='group:'+query.get('group');updateSelection()}
+if(query.has('contact')&&currentSession.contacts.some(c=>String(c.start_seq)===query.get('contact'))){$('selection').value='contact:'+query.get('contact');updateSelection()}
+</script></html>

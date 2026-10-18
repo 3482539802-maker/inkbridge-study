@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>学习时间线 · InkBridge</title>
+<link rel="icon" href="data:,">
+<style>
+:root{font-family:system-ui,"Microsoft YaHei",sans-serif;color:#203b3b;background:#f3f1e9}*{box-sizing:border-box}body{margin:0}main{max-width:1360px;margin:auto;padding:32px}header{display:flex;justify-content:space-between;gap:20px;align-items:center}h1{font-size:30px;margin:6px 0 12px}p{line-height:1.7;color:#536561}small,.muted{color:#63756e}.tag{font-size:12px;letter-spacing:.12em;color:#47735b}.badge{background:#dfebdf;padding:10px 16px;border-radius:24px}.stats{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0}.stat{background:#fffdf7;flex:1;min-width:160px;padding:20px;border:1px solid #e1dfd2;border-radius:14px}.stat strong{display:block;font-size:30px;margin-bottom:8px}.controls{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin:20px 0}select,input,textarea,button{font:inherit;border-radius:8px;border:1px solid #c7d1c6;padding:10px;background:#fffef9;color:inherit}button{background:#2e604b;color:white;border:0;cursor:pointer}button:disabled{opacity:.5;cursor:wait}.workspace{display:grid;grid-template-columns:320px 1fr;gap:20px}.list{max-height:850px;overflow:auto}.card{width:100%;display:block;text-align:left;background:#fffdf7;color:#203b3b;border:1px solid #e1dfd2;padding:16px;margin-bottom:10px}.card.active{border:2px solid #2e604b}.card strong,.card small{display:block;margin-bottom:6px}.detail{background:#fffdf7;border:1px solid #e1dfd2;border-radius:16px;padding:24px;min-width:0}canvas{width:100%;height:300px;border:1px solid #e8e6d9;border-radius:10px;background:white}h2{font-size:22px;margin-top:0}.timing{display:flex;flex-wrap:wrap;gap:20px;margin:18px 0}.timing strong{display:block;font-size:23px}.notice{padding:12px;background:#f7efdc;color:#765d2a;line-height:1.7;border-radius:8px;margin:14px 0;font-size:14px}.form{display:grid;grid-template-columns:1fr 1fr;gap:12px}label{font-size:13px;display:grid;gap:5px}textarea{resize:vertical;min-height:80px}.wide{grid-column:1/-1}#message{min-height:25px;margin-top:10px}details{margin:20px 0;color:#63756e;font-size:13px;overflow-wrap:anywhere}#source{white-space:pre-wrap}a{color:#2e604b}#empty{padding:30px 0}footer{margin:24px 0;line-height:1.6;color:#63756e;font-size:13px}@media(max-width:800px){main{padding:16px}.workspace{grid-template-columns:1fr}.list{max-height:250px}.form{grid-template-columns:1fr}header{align-items:flex-start;flex-direction:column}}
+</style>
+<main>
+<header><div><div class="tag">INKBRIDGE / 学习证据</div><h1>把书写过程留成时间线</h1><p>回看写了什么、写了多久，再标记题目、步骤与卡点。</p></div><div id="status" class="badge">读取本机记录</div></header>
+<div class="stats"><div class="stat"><strong id="count">—</strong><small>候选片段</small></div><div class="stat"><strong id="writing">—</strong><small>已观察到的落笔时间</small></div><div class="stat"><strong id="annotated">—</strong><small>已补充学习信息</small></div></div>
+<div class="notice">片段按停笔间隔切分，还没有识别文字或解题步骤。停笔可能是在读题、思考、切页或离开；下面的“未书写”不能直接解释为思考时间。画布重放原始轨迹，笔记中的撤销、滚动和缩放尚未同步。</div>
+<div class="controls"><label>窗口筛选 <select id="window"><option value="">全部窗口（尚未绑定笔记）</option></select></label><label>采集会话 <select id="session"><option value="">全部会话</option></select></label><span id="updated" class="muted"></span></div>
+<div class="workspace"><nav id="list" class="list" aria-label="书写片段"></nav><section class="detail"><div id="empty">等待书写记录。接收器收到新会话后会自动出现在这里。</div><div id="content" hidden>
+<h2 id="title"></h2><small id="identity"></small>
+<div class="timing"><div><strong id="elapsed"></strong><small>片段首末事件跨度</small></div><div><strong id="active"></strong><small>已观察落笔</small></div><div><strong id="other"></strong><small>片段内未书写 / 其他</small></div></div>
+<canvas id="ink" width="1200" height="550" aria-label="原始轨迹重放"></canvas><p id="before"></p><div id="issues" class="notice" hidden></div>
+<form id="form" class="form">
+<label>课程 <input name="subject" placeholder="例如：机械设计基础" maxlength="2000"></label><label>课件 / 原题来源 <input name="material" placeholder="文件名、章节或页码" maxlength="2000"></label>
+<label>题目 <input name="problem" placeholder="例如：第4章，第3题" maxlength="2000"></label><label>实际步骤 <input name="step" placeholder="例如：列位移方程" maxlength="2000"></label>
+<label>知识点 <input name="concept" placeholder="例如：凸轮运动规律" maxlength="2000"></label><label>片段前停笔原因（自己确认） <select name="pause_reason"><option value="">未说明</option><option>读题</option><option>思考</option><option>查资料</option><option>离开 / 休息</option><option>切页或调整画布</option></select></label>
+<label class="wide">卡点 / 需要的帮助 <textarea name="reflection" placeholder="例如：能列公式，但不知道为什么用这个边界条件" maxlength="2000"></textarea></label>
+<div class="wide"><button type="submit" id="save">保存这段学习信息</button> <span id="message" role="status"></span></div>
+</form></div></section></div>
+<details><summary>数据来源与测量范围</summary><p id="source"></p></details>
+<footer>仅保存在这台电脑。计时使用平板事件时间，断线后的补传不会算成新的书写时间。学习信息由你填写确认；还没有自动识别、学习诊断或模型调用。接收器未运行时，本页仍可回看历史。</footer>
+</main>
+<script>
+const $=id=>document.getElementById(id),form=$('form');
+const fields=['subject','material','problem','step','concept','pause_reason','reflection'];
+const issues={open_stroke:'笔画尚未闭合，只统计已观察部分',missing_down:'缺少落笔事件',missing_up:'缺少抬笔事件',sequence_or_clock_discontinuity:'序号或设备时钟中断',cancelled:'笔画被取消',invalid_record:'含无效记录',window_filter_boundary:'窗口筛选中断',target_or_tool_changed:'窗口或工具发生变化'};
+let report=null,selected=null,busy=false,dirty=false,signature='',visible=[];
+function duration(s){return s<60?s.toFixed(2)+' 秒':Math.floor(s/60)+' 分 '+(s%60).toFixed(1)+' 秒';}
+form.addEventListener('input',()=>{dirty=true;$('message').textContent='有未保存修改';});
+function filtered(){return report.candidates.filter(c=>(!$('window').value||String(c.window_id)===$('window').value)&&(!$('session').value||c.session_id===$('session').value));}
+function select(id){if(dirty&&!confirm('切换片段将放弃未保存的修改，继续吗？'))return;selected=id;dirty=false;render();}
+function options(el,values,label){const previous=el.value;el.replaceChildren(new Option(label,''));for(const v of values)el.add(new Option(v,v));el.value=previous;if(el.selectedIndex<0)el.value='';}
+function draw(c){const canvas=$('ink'),ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height);const points=c.strokes.flatMap(s=>s.points);if(!points.length)return;
+let left=Infinity,top=Infinity,right=-Infinity,bottom=-Infinity;for(const p of points){left=Math.min(left,p[0]);right=Math.max(right,p[0]);top=Math.min(top,p[1]);bottom=Math.max(bottom,p[1]);}const scale=Math.min((canvas.width-60)/Math.max(80,right-left),(canvas.height-60)/Math.max(80,bottom-top));
+for(const s of c.strokes){ctx.strokeStyle=s.tool_type===2?'#c98536':'#285d49';ctx.fillStyle=ctx.strokeStyle;ctx.lineWidth=2.4;ctx.lineCap='round';ctx.lineJoin='round';ctx.setLineDash(s.tool_type===2?[7,5]:[]);ctx.beginPath();s.points.forEach((p,i)=>{const x=30+(p[0]-left)*scale,y=30+(p[1]-top)*scale;i?ctx.lineTo(x,y):ctx.moveTo(x,y);});ctx.stroke();if(s.points.length===1){const p=s.points[0];ctx.beginPath();ctx.arc(30+(p[0]-left)*scale,30+(p[1]-top)*scale,2.5,0,Math.PI*2);ctx.fill();}}}
+function render(){if(!report)return;visible=filtered();if(!visible.some(c=>c.id===selected))selected=visible.at(-1)?.id||null;
+$('count').textContent=visible.length;$('writing').textContent=duration(visible.reduce((a,c)=>a+c.observed_writing_seconds,0));$('annotated').textContent=visible.filter(c=>Object.keys(c.annotation).length).length;
+$('list').replaceChildren();visible.forEach((c,i)=>{const button=document.createElement('button');button.className='card'+(c.id===selected?' active':'');const strong=document.createElement('strong');strong.textContent=c.annotation.step||'候选片段 '+(i+1);const small=document.createElement('small');small.textContent=(c.annotation.problem||'题目待标记')+' · '+c.stroke_count+' 笔';const span=document.createElement('span');span.textContent='落笔 '+duration(c.observed_writing_seconds)+' / 跨度 '+duration(c.elapsed_seconds);button.append(strong,small,span);button.onclick=()=>select(c.id);$('list').append(button);});
+const c=visible.find(c=>c.id===selected);$('empty').hidden=!!c;$('content').hidden=!c;if(!c)return;
+$('title').textContent=c.annotation.step||'待确认的书写片段';$('identity').textContent='会话 '+c.session_id.slice(0,12)+' · 窗口 '+c.window_id+' · 起始序号 '+c.first_seq;
+$('elapsed').textContent=duration(c.elapsed_seconds);$('active').textContent=duration(c.observed_writing_seconds);$('other').textContent=duration(c.other_seconds);draw(c);
+$('before').textContent=c.gap_before_seconds===null?'前置间隔未知，或窗口/会话发生切换。':'与前一片段间隔 '+duration(c.gap_before_seconds)+'（未书写，原因待确认）。';
+$('issues').hidden=!c.issues.length&&!c.eraser_stroke_count;$('issues').textContent=c.issues.map(i=>issues[i]||i).join('；')+(c.eraser_stroke_count?'；橙色虚线为橡皮输入轨迹，不代表已经知道笔记实际删掉了什么。':'');
+if(!dirty){for(const name of fields)form.elements[name].value=c.annotation[name]||'';$('message').textContent=c.annotation.updated_at_pc?'学习信息已保存':'';}
+}
+$('window').onchange=$('session').onchange=()=>{if(dirty){$('message').textContent='请先保存修改再筛选';return;}selected=null;render();};
+form.onsubmit=async e=>{e.preventDefault();const id=selected,annotation={};for(const name of fields)annotation[name]=form.elements[name].value;$('save').disabled=true;try{const response=await fetch('/api/annotation',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id,annotation})});if(!response.ok)throw Error(await response.text());report=await response.json();dirty=false;render();$('message').textContent='已保存，可用于后续学习复盘';}catch(error){$('message').textContent='保存失败：'+error.message;}finally{$('save').disabled=false;}};
+async function poll(){if(busy)return;busy=true;try{const response=await fetch('/api/study');if(!response.ok)throw Error(response.status);report=await response.json();
+const next=JSON.stringify([report.sources.map(s=>s.path),report.candidates.map(c=>c.session_id),report.sources.map(s=>s.window_ids)]);if(next!==signature&&!dirty){signature=next;options($('window'),[...new Set(report.sources.flatMap(s=>s.window_ids||[]))],'全部窗口（尚未绑定笔记）');options($('session'),[...new Set(report.candidates.map(c=>c.session_id))],'全部会话');}
+const recording=report.sources.some(s=>s.capture_state==='recording');$('status').textContent=report.sources.some(s=>s.synthetic)?'含模拟测试数据':recording?'采集标记为进行中 · 以新事件为准':report.candidates.length?'历史记录 · 等待新采集':'等待新采集';
+$('updated').textContent='已读取 '+new Date(report.generated_at_pc).toLocaleTimeString();$('source').textContent=report.sources.map(s=>s.path+'\n状态：'+(s.capture_state||'未知')+'；记录：'+(s.record_count||0)+'；无效：'+(s.invalid_records||0)+'；未完成尾行：'+(s.incomplete_tail_records||0)+(s.error?'\n错误：'+s.error:'')).join('\n\n');if(!dirty)render();
+}catch(error){$('status').textContent='本机时间线服务未运行';}finally{busy=false;}}
+poll();setInterval(poll,1500);
+</script>
+</html>

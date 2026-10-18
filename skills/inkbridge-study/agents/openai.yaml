@@ -1,0 +1,6 @@
+interface:
+  display_name: "InkBridge 学习助手"
+  short_description: "跨工作空间使用华为笔记题册、原始笔迹证据、手写核图与可追溯学习辅导"
+  default_prompt: "使用 $inkbridge-study 检查已有学习系统，并接续题册、笔迹核图和课程辅导。"
+policy:
+  allow_implicit_invocation: true

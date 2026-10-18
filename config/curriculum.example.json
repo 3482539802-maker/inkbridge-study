@@ -1,0 +1,13 @@
+{
+  "schema": "inkbridge-curriculum-v1",
+  "course_id": "fluid-mechanics",
+  "scope_note": "可替换的课程目录示例；正式使用时按自己的教材和考纲补充全部章节与题目映射。此处没有假设已学过或已掌握。",
+  "chapters": [
+    {"id":"conservation","title":"控制体与守恒方程","goals":["画控制体，明确流向、单位和假设","分别核对质量、动量与机械能方程的适用条件"]}
+  ],
+  "knowledge_points": [
+    {"id":"continuity","chapter_id":"conservation","title":"连续性方程","prerequisites":[]},
+    {"id":"bernoulli","chapter_id":"conservation","title":"Bernoulli 方程及适用条件","prerequisites":["continuity"]}
+  ],
+  "question_knowledge": {"q1":["continuity","bernoulli"]}
+}

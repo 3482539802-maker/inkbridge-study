@@ -1,0 +1,4 @@
+# Optional PC-side visual coordinate calibration, no cloud service.
+-r requirements-notes.txt
+numpy>=2,<3
+opencv-python>=4.9,<6

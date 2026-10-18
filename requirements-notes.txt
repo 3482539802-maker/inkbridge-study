@@ -1,0 +1,2 @@
+# Optional document/context tools; not needed by raw capture or receiver.
+PyMuPDF>=1.24,<2

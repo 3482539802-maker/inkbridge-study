@@ -1,0 +1,38 @@
+{
+  "schema": "inkbridge-curriculum-v1",
+  "course_id": "cmc2025",
+  "review_policy": {"retry_days":1,"independent_days":3,"retained_days":7,"retention_gap_days":1},
+  "scope_note": "按这份非数学 A 类试卷整理的 8 章建议路线，覆盖本卷考点并补充必要前置知识；不是完整官方考纲，也不表示这些章节都已测试。教材或考试范围变化后可修订。证明方法贯穿各章。",
+  "chapters": [
+    {"id":"limits","title":"函数、极限与渐近展开","goals":["判断极限类型、小量阶数与可用展开的条件","处理低阶抵消，按首个非零项确定参数"]},
+    {"id":"derivatives","title":"一元微分与函数分析","goals":["从定义识别导数，使用链式法则与乘积法则","用导数分析单调性，并核对分母为零等边界"]},
+    {"id":"integrals","title":"一元积分与积分证明","goals":["把定积分与变上限积分区分清楚","掌握分部积分、积分约束和分区证明"]},
+    {"id":"multivariate","title":"多元函数与隐函数","goals":["确定复合函数的变量依赖和求导基点","求偏导并检查隐函数局部存在条件"]},
+    {"id":"geometry","title":"空间解析几何与向量","goals":["用点、方向与法向量表达空间约束","区分平面垂直、平行和点在平面上的条件"]},
+    {"id":"multiple-integrals","title":"重积分与曲线积分","goals":["从几何边界写积分区域与次序","用对称性简化积分，区分 ds 与有向线积分"]},
+    {"id":"ode","title":"常微分方程","goals":["识别可换元方程并化为一阶线性方程","保留除法丢失的常值解，说明解的实数范围"]},
+    {"id":"series","title":"级数与收敛证明","goals":["区分通项趋零与级数收敛","构造统一可求和上界，使用比较判别法"]}
+  ],
+  "knowledge_points": [
+    {"id":"small-orders","chapter_id":"limits","title":"小量阶数与低阶抵消","prerequisites":[]},
+    {"id":"taylor","chapter_id":"limits","title":"Taylor 展开与主项系数","prerequisites":["small-orders"]},
+    {"id":"derivative-definition","chapter_id":"derivatives","title":"导数定义与函数自洽约束","prerequisites":[]},
+    {"id":"chain-rule","chapter_id":"derivatives","title":"乘积法则与复合求导","prerequisites":["derivative-definition"]},
+    {"id":"integral-leading","chapter_id":"integrals","title":"变上限积分的主项","prerequisites":["small-orders"]},
+    {"id":"integral-constraints","chapter_id":"integrals","title":"定积分约束与待定常数","prerequisites":["derivative-definition"]},
+    {"id":"parts-proof","chapter_id":"integrals","title":"分部积分、反对称与分区证明","prerequisites":["chain-rule"]},
+    {"id":"implicit-partials","chapter_id":"multivariate","title":"复合隐函数偏导与基点","prerequisites":["chain-rule"]},
+    {"id":"normal-vectors","chapter_id":"geometry","title":"法向量与平面约束","prerequisites":[]},
+    {"id":"spatial-regions","chapter_id":"multiple-integrals","title":"空间区域与积分次序","prerequisites":["normal-vectors"]},
+    {"id":"line-symmetry","chapter_id":"multiple-integrals","title":"第一类曲线积分与对称性","prerequisites":["normal-vectors"]},
+    {"id":"ode-substitution","chapter_id":"ode","title":"微分方程换元、积分因子与漏解","prerequisites":["chain-rule"]},
+    {"id":"series-comparison","chapter_id":"series","title":"非负项级数与可求和上界","prerequisites":["derivative-definition"]}
+  ],
+  "question_knowledge": {
+    "I-1":["small-orders","taylor"], "I-2":["normal-vectors"],
+    "I-3":["small-orders","taylor","integral-leading"], "I-4":["chain-rule","implicit-partials"],
+    "I-5":["line-symmetry"], "II":["derivative-definition","integral-constraints"],
+    "III":["ode-substitution"], "IV":["spatial-regions"], "V":["series-comparison"],
+    "VI":["chain-rule","parts-proof"]
+  }
+}
